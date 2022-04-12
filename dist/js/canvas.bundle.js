@@ -99,6 +99,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/img/flag.png":
+/*!**************************!*\
+  !*** ./src/img/flag.png ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "ae8489124edfe27d4ba0b5538c95acda.png");
+
+/***/ }),
+
 /***/ "./src/img/hills.png":
 /*!***************************!*\
   !*** ./src/img/hills.png ***!
@@ -221,11 +234,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _img_spriteStandLeft_png__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../img/spriteStandLeft.png */ "./src/img/spriteStandLeft.png");
 /* harmony import */ var _img_spriteStandRight_png__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../img/spriteStandRight.png */ "./src/img/spriteStandRight.png");
 /* harmony import */ var _img_victory_png__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../img/victory.png */ "./src/img/victory.png");
+/* harmony import */ var _img_flag_png__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../img/flag.png */ "./src/img/flag.png");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -331,6 +346,7 @@ var GenericObject = /*#__PURE__*/function () {
     var x = _ref2.x,
         y = _ref2.y,
         image = _ref2.image;
+    var flag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
     _classCallCheck(this, GenericObject);
 
@@ -338,6 +354,7 @@ var GenericObject = /*#__PURE__*/function () {
       x: x,
       y: y
     };
+    this.flag = flag;
     this.image = image;
     this.width = image.width;
     this.height = image.height;
@@ -345,8 +362,8 @@ var GenericObject = /*#__PURE__*/function () {
 
   _createClass(GenericObject, [{
     key: "draw",
-    value: function draw() {
-      c.drawImage(this.image, this.position.x, this.position.y);
+    value: function draw(flag) {
+      if (flag) c.drawImage(this.image, this.position.x, this.position.y, 121, 300);else c.drawImage(this.image, this.position.x, this.position.y);
     }
   }]);
 
@@ -421,7 +438,11 @@ function init() {
     x: -1,
     y: -1,
     image: createImage(_img_hills_png__WEBPACK_IMPORTED_MODULE_1__["default"])
-  })];
+  }), new GenericObject({
+    x: platformImage.width * 5 + 800 - 2,
+    y: 170,
+    image: createImage(_img_flag_png__WEBPACK_IMPORTED_MODULE_9__["default"])
+  }, true)];
   scrollOffset = 0;
 }
 
@@ -430,7 +451,7 @@ function animate() {
   c.fillStyle = 'white';
   c.fillRect(0, 0, canvas.width, canvas.height);
   genericObjects.forEach(function (genericObject) {
-    genericObject.draw();
+    genericObject.draw(genericObject.flag);
   });
   platforms.forEach(function (platform) {
     platform.draw();
@@ -450,7 +471,7 @@ function animate() {
         platform.position.x -= player.speed;
       });
       genericObjects.forEach(function (genericObject) {
-        genericObject.position.x -= player.speed * 0.66;
+        if (genericObject.flag) genericObject.position.x -= player.speed;else genericObject.position.x -= player.speed * 0.66;
       });
     } else if (keys.left.pressed && scrollOffset > 0) {
       scrollOffset -= player.speed;

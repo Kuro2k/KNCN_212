@@ -8,6 +8,7 @@ import spriteRunRight from '../img/spriteRunRight.png'
 import spriteStandLeft from '../img/spriteStandLeft.png'
 import spriteStandRight from '../img/spriteStandRight.png'
 import victory from '../img/victory.png'
+import flag from '../img/flag.png'
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
@@ -96,19 +97,21 @@ class Platform {
 }
 
 class GenericObject {
-  constructor({x, y, image}) {
+  constructor({x, y, image}, flag=false) {
     this.position = {
         x, 
         y
     }
-
+    this.flag = flag
     this.image = image
     this.width = image.width
     this.height = image.height
     
   }
-  draw() {
-      c.drawImage(this.image, this.position.x, this.position.y)
+  draw(flag) {
+      if (flag)
+        c.drawImage(this.image, this.position.x, this.position.y, 121, 300)
+      else c.drawImage(this.image, this.position.x, this.position.y)
   }
 }
 
@@ -169,9 +172,9 @@ function init() {
       x: -1,
       y: -1,
       image: createImage(hills)
-    })
+    }),
+    new GenericObject({x: platformImage.width*5 + 800 -2, y: 170, image: createImage(flag)}, true)
   ]
-
   scrollOffset = 0
 }
 function animate() {
@@ -180,7 +183,7 @@ function animate() {
     c.fillRect(0, 0, canvas.width, canvas.height)
     
     genericObjects.forEach((genericObject => {
-      genericObject.draw()
+      genericObject.draw(genericObject.flag)
     }))
 
     platforms.forEach((platform) => {
@@ -201,7 +204,9 @@ function animate() {
                 platform.position.x -= player.speed
             })
             genericObjects.forEach((genericObject) => {
-              genericObject.position.x -= player.speed * 0.66
+              if (genericObject.flag)
+                genericObject.position.x -= player.speed
+              else genericObject.position.x -= player.speed * 0.66
             })
             
         } else if (keys.left.pressed && scrollOffset > 0) {
